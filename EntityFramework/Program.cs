@@ -1,4 +1,5 @@
 using EntityFramework.Models;
+using EntityFramework.Repositories;
 
 namespace EntityFramework;
 class Program
@@ -7,36 +8,26 @@ class Program
     {
         using (var db = new AppContext())
         {
-            // Добавление пользователя
-            var user = new User { Name = "Bob", Email = "bob@example.com" };
-            db.Users.Add(user);
-            db.SaveChanges();
+            var userRepository = new UserRepository(db);
+            var bookRepository = new BookRepository(db);
+            var authorRepository = new AuthorRepository(db);
+            var genreRepository = new GenreRepository(db);
 
-            // Добавление книги
-            var book1 = new Book { Title = "VS Code 2025", Year = 2025, UserId = user.Id };
-            var book2 = new Book { Title = "Entity Framework Core", Year = 2022, UserId = user.Id };
+            // Добавление данных
+            var author = new Author { Name = "George Orwell" };
+            authorRepository.Add(author);
 
-            db.Books.AddRange(book1, book2);
-            db.SaveChanges();
+            var genre = new Genre { Name = "Dystopian" };
+            genreRepository.Add(genre);
 
-            // Вывод данных
-            var users = db.Users.ToList();
-            Console.WriteLine("Пользователи:");
-            int userCounter = 1;
-            foreach (var u in users)
-            {
-                Console.WriteLine($"{userCounter++}. {u.Name}, Email: {u.Email}");
-            }
+            var user = new User { Name = "John Doe", Email = "john@example.com" };
+            userRepository.Add(user);
 
-            Console.WriteLine("\nКниги:");
-            var books = db.Books.ToList();
-            int bookCounter = 1;
+            var book = new Book { Title = "1984", Year = 1949, Author = author, Genre = genre };
+            bookRepository.Add(book);
 
-            foreach (var book in books)
-            {
-                Console.WriteLine($"{bookCounter++}. {book.Title} ({book.Year})");
-            }
+            // Взятие книги на руки
+            bookRepository.BorrowBook(user.Id, book.Id);
         }
-
     }
 }
