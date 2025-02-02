@@ -21,15 +21,20 @@ class Program
 
             // Вывод данных
             var users = db.Users.ToList();
+            Console.WriteLine("Пользователи:");
+            int userCounter = 1;
             foreach (var u in users)
             {
-                Console.WriteLine($"Пользователь: {u.Name}, Email: {u.Email}");
+                Console.WriteLine($"{userCounter++}. {u.Name}, Email: {u.Email}");
+            }
 
-                var books = db.Books.Where(b => b.UserId == u.Id).ToList();
-                foreach (var book in books)
-                {
-                    Console.WriteLine($" - Книга: {book.Title} ({book.Year})");
-                }
+            Console.WriteLine("\nКниги:");
+            var books = db.Books.ToList();
+            int bookCounter = 1;
+
+            foreach (var book in books)
+            {
+                Console.WriteLine($"{bookCounter++}. {book.Title} ({book.Year})");
             }
         }
 
